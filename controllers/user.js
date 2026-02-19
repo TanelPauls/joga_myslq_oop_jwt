@@ -1,16 +1,16 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const userDbModel = require('../models/user.js');
 const userModel = new userDbModel();
 
 class userController {
 
-    async registerPage(req, res){
-        res.render('register');
+    async registerPage(req, res) {
+        return res.render('register');
     }
 
     async register(req, res) {
         try {
-
             const { username, email, password } = req.body;
 
             const existingUser = await userModel.findByUsername(username);
@@ -41,7 +41,7 @@ class userController {
 
             const cryptPassword = await bcrypt.hash(password, 10);
 
-            const registeredId = await userModel.create({
+            await userModel.create({
                 username,
                 email,
                 password_hash: cryptPassword
@@ -49,15 +49,23 @@ class userController {
 
             const userData = await userModel.findByUsernameWithRole(username);
 
-            req.session.user = {
-                id: userData.id,
-                username: userData.username,
-                role: userData.role
-            };
+            const token = jwt.sign(
+                {
+                    id: userData.id,
+                    username: userData.username,
+                    role: userData.role
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' }
+            );
 
+            res.cookie('token', token, {
+                httpOnly: true,
+                sameSite: 'lax',
+                secure: false
+            });
 
             return res.redirect('/');
-
         } catch (err) {
             console.error(err);
             return res.status(500).render('register', {
@@ -65,7 +73,7 @@ class userController {
             });
         }
     }
-   
+
     async login(req, res) {
         try {
             const { username, password } = req.body;
@@ -89,11 +97,21 @@ class userController {
                 });
             }
 
-            req.session.user = {
-                id: existingUser.id,
-                username: existingUser.username,
-                role: existingUser.role
-            };
+            const token = jwt.sign(
+                {
+                    id: existingUser.id,
+                    username: existingUser.username,
+                    role: existingUser.role
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                sameSite: 'lax',
+                secure: false
+            });
 
             return res.json({
                 success: true,
@@ -110,19 +128,9 @@ class userController {
     }
 
     async logout(req, res) {
-        req.session.destroy(err => {
-            if (err) {
-                console.error(err);
-                return res.redirect('/');
-            }
-
-            res.clearCookie('connect.sid');
-            return res.redirect('/');
-        });
+        res.clearCookie('token');
+        return res.redirect('/');
     }
-
 }
 
-
-
-module.exports = userController
+module.exports = userController;

@@ -2,11 +2,13 @@ require("dotenv").config();
 
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const authMiddleware = require('./middleware/auth');
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(authMiddleware);
 
 const path = require ('path');
 const hbs = require('express-handlebars');
