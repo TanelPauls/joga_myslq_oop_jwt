@@ -1,17 +1,26 @@
-function requireAdmin(req, res, next) {
-    if (!req.session.user) {
-        return res.status(401).json({
-            message: "Authentication required"
-        });
+const jwt = require('jsonwebtoken');
+
+module.exports = function authMiddleware(req, res, next) {
+    const token = req.cookies.token;
+
+    if (!token) {
+        res.locals.user = null;
+        res.locals.isAdmin = false;
+        return next();
     }
 
-    if (req.session.user.role !== "admin") {
-        return res.status(403).json({
-            message: "Admin access required"
-        });
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+
+        res.locals.user = decoded;
+        res.locals.isAdmin = decoded.role === "admin";
+
+        next();
+    } catch (err) {
+        res.clearCookie("token");
+        res.locals.user = null;
+        res.locals.isAdmin = false;
+        next();
     }
-
-    next();
-}
-
-module.exports = { requireAdmin };
+};

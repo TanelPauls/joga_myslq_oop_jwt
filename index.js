@@ -1,18 +1,12 @@
 require("dotenv").config();
 
+const cookieParser = require('cookie-parser');
 const express = require('express');
-const session = require('express-session');
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    cookie: {maxAge: 1000 * 60 * 60 * 24},
-    resave: false
-}))
+app.use(cookieParser());
 
 const path = require ('path');
 const hbs = require('express-handlebars');
@@ -39,12 +33,6 @@ const userController = new userControllerClass();
 const articleRoutes = require('./routes/articles.js')(articleController);
 const authorRoutes = require('./routes/authors.js')(authorController);
 const userRoutes = require('./routes/users.js')(userController);
-
-app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
-    res.locals.isAdmin = req.session.user?.role === "admin";
-    next();
-});
 
 app.use('/', articleRoutes);
 app.use('/author', authorRoutes);
