@@ -1,0 +1,30 @@
+<h1>Homepage</h1>
+
+<div class="article-list">
+    {{#articles}}
+    <article data-id="{{id}}">
+
+        <a href="/article/{{slug}}">
+            <img src="/images/{{image}}">
+        </a>
+
+        <h2>
+            <a href="/article/{{slug}}">{{name}}</a>
+        </h2>
+
+        {{#if ../isAdmin}}
+            <button class="deleteBtn" data-id="{{id}}">
+                Delete
+            </button>
+        {{/if}}
+
+    </article>
+    {{/articles}}
+    {{#if isAdmin}}
+        <div class="add-article">
+            <a href="/article/create" class="btn-primary">
+                + Add Article
+            </a>
+        </div>
+    {{/if}}
+</div>

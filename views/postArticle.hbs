@@ -1,0 +1,38 @@
+<h1>Add article</h1>
+
+{{#if error}}
+    <div class="alert">{{error}}</div>
+{{/if}}
+<form action="/article/create" method="POST" class="authRegister">
+
+    <label class="label">Name: </label><br>
+    <input name="name" type="text" value="{{name}}" required />
+    <br>
+    <br>
+    <label class="label">Slug:</label><br>
+    <input name="slug" type="text" value="{{slug}}" required />
+    <br>
+    <br>
+    <label class="label">Image:</label><br>
+    <input name="image" type="text" value="{{image}}" required />
+    <br>
+    <br>
+    <label class="label">Body:</label><br>
+    <input name="body" type="text" value="{{body}}" required />
+    <br>
+    <br>
+    <label class="label">Author:</label><br>
+    <select name="author_id" required>
+        <option value="">Select an author</option>
+        {{#each authors}}
+            <option value="{{this.id}}">
+            {{this.name}}
+            </option>
+        {{/each}}
+    </select>
+
+    <br>
+    <br>
+    <button type="submit" class="submitButton">Add Article</button>
+
+</form>

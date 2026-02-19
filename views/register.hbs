@@ -1,0 +1,24 @@
+<h1>Register</h1>
+
+{{#if error}}
+    <div class="alert">{{error}}</div>
+{{/if}}
+<form action="/users/register" method="POST" class="authRegister">
+
+    <label class="label">Username:</label><br>
+    <input name="username" type="text" value="{{username}}" required />
+    <br>
+    <br>
+    <label class="label">E-mail:</label><br>
+    <input name="email" type="email" value="{{email}}" required />
+    <br>
+    <br>
+    <label class="label">Password:</label><br>
+    <input name="password" type="password" required class="input" />
+    <br>
+    <br>
+    <button type="submit" class="submitButton">Register</button>
+
+</form>
+
+
