@@ -14,7 +14,7 @@
             <a href="/">Yoga Blog</a> </br>
             {{#if user}}
                 <div class="authBar">
-                    <span>Welcome {{user.username}} {{user.role}}</span>
+                    <span>Welcome {{user.username}}. - Role: {{user.role}}</span>
                     <form action="/users/logout" method="POST">
                         <button type="submit">Logout</button>
                     </form>
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         authContainer.innerHTML = `
             <div class="authBar">
-                <span>Welcome ${username} (${role})</span>
+                <span>Welcome ${username}. - Role: ${role}</span>
                 <form action="/users/logout" method="POST">
                     <button type="submit">Logout</button>
                 </form>

@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const cookieParser = require('cookie-parser');
 const express = require('express');
-const authMiddleware = require('./middleware/auth');
+const { authMiddleware } = require('./middleware/auth');
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
